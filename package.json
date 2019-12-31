@@ -1,0 +1,17 @@
+{
+  "name": "nora",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "lerna run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^12.12.20",
+    "lerna": "^3.19.0",
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.3"
+  }
+}

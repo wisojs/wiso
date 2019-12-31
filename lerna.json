@@ -1,0 +1,21 @@
+{
+  "packages": [
+    "packages/*"
+  ],
+  "npmClient": "cpm",
+  "version": "independent",
+  "command": {
+    "bootstrap": {
+      "hoist": true,
+      "noCi": true,
+      "npmClientArgs": [
+        "--no-package-lock"
+      ]
+    },
+    "publish": {
+      "ignoreChanges": [
+        "*.md"
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "@wisojs/factory",
+  "version": "1.0.0",
+  "description": "the factory",
+  "author": "evio <evio@vip.qq.com>",
+  "homepage": "",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "src/index.ts",
+  "directories": {
+    "lib": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "build": "rm -rf dist/ && tsc -d"
+  },
+  "dependencies": {
+    "@wisojs/common": "^1.0.0",
+    "inversify": "^5.0.1"
+  }
+}

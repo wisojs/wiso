@@ -1,0 +1,23 @@
+{
+  "name": "@wisojs/common",
+  "version": "1.0.0",
+  "description": "> TODO: description",
+  "author": "evio <evio@vip.qq.com>",
+  "homepage": "",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "src/index.ts",
+  "directories": {
+    "lib": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "build": "rm -rf dist/ && tsc -d"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
+  }
+}
