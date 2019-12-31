@@ -1,12 +1,12 @@
 import { Container, interfaces } from 'inversify';
 import { AsyncEventEmitter, Timer, Transaction, CustomError, NormalizeMetaData } from '@wisojs/common';
 
-export type FactoryEvents = {
+type FactoryEvents = {
   initialize: [Transaction],
   terminate: [Transaction],
 }
 
-export interface FactoryOptions {
+interface FactoryOptions {
   logger?: Console,
   terminateTimeout?: number,
 };
@@ -25,7 +25,7 @@ export class Factory extends AsyncEventEmitter<FactoryEvents> {
   constructor(options: interfaces.ContainerOptions & FactoryOptions = {}) {
     super();
     this.logger = options.logger || console;
-    this.terminateTimeout = options.terminateTimeout || 3000;
+    this.terminateTimeout = options.terminateTimeout || 0;
     this.Service = new Container(options);
 
     process.on('beforeExit', this.terminate.bind(this));
@@ -47,13 +47,15 @@ export class Factory extends AsyncEventEmitter<FactoryEvents> {
     this.closing = true;
     const transaction = new Transaction(this.logger);
     transaction.begin(() => new Promise((resolve, reject) => {
-      Timer.setTimeout(() => {
-        Timer.destroy();
-        reject(new CustomError({
-          name: 'EXITTIMEOUTERROR',
-          message: 'Exit Timeouted: ' + this.terminateTimeout + 'ms',
-        }));
-      }, this.terminateTimeout);
+      if (this.terminateTimeout > 0) {
+        Timer.setTimeout(() => {
+          Timer.destroy();
+          reject(new CustomError({
+            name: 'EXITTIMEOUTERROR',
+            message: 'Exit Timeouted: ' + this.terminateTimeout + 'ms',
+          }));
+        }, this.terminateTimeout);
+      }
       this.emit('terminate', transaction)
         .then((data) => { Timer.destroy(); resolve(data); })
         .catch(e => { Timer.destroy(); reject(e); });
