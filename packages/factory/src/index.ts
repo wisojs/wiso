@@ -1,5 +1,8 @@
 import { Container, interfaces } from 'inversify';
 import { AsyncEventEmitter, Timer, Transaction, CustomError, NormalizeMetaData } from '@wisojs/common';
+import { ServerInitializer } from './server';
+
+export * from './server';
 
 type FactoryEvents = {
   initialize: [Transaction],
@@ -13,7 +16,7 @@ interface FactoryOptions {
 
 export class Factory extends AsyncEventEmitter<FactoryEvents> {
   private closing = false;
-  private readonly logger: Console;
+  public readonly logger: Console;
   private readonly terminateTimeout: number;
   
   /**
@@ -60,5 +63,16 @@ export class Factory extends AsyncEventEmitter<FactoryEvents> {
         .then((data) => { Timer.destroy(); resolve(data); })
         .catch(e => { Timer.destroy(); reject(e); });
     })).then(() => process.exit(0)).catch(() => process.exit(1));
+  }
+
+  public server<U = any, Z = any>(serverModule: interfaces.Newable<Z>, options: U) {
+    const meta = NormalizeMetaData.bind(serverModule);
+    if (!meta || !meta.has('initialize')) throw new CustomError({
+      message: 'This must be a server module',
+      name: 'SERVERMODULEERROR'
+    });
+    const target = new serverModule(this, options);
+    const callback = meta.get<ServerInitializer<Z, U>>('initialize');
+    callback(this, target, options);
   }
 }

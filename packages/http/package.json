@@ -1,0 +1,40 @@
+{
+  "name": "@wisojs/http",
+  "version": "1.0.0",
+  "description": "http server",
+  "keywords": [
+    "http",
+    "wiso"
+  ],
+  "author": "evio <evio@vip.qq.com>",
+  "homepage": "https://github.com/wisojs/wiso#readme",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "src/index.ts",
+  "directories": {
+    "lib": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wisojs/wiso.git"
+  },
+  "scripts": {
+    "build": "rm -rf dist/ && tsc -d"
+  },
+  "bugs": {
+    "url": "https://github.com/wisojs/wiso/issues"
+  },
+  "dependencies": {
+    "@wisojs/common": "^1.0.0",
+    "@wisojs/factory": "^1.0.0",
+    "find-my-way": "^2.2.1",
+    "koa": "^2.11.0"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.11.0"
+  }
+}
