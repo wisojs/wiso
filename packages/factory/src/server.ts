@@ -1,10 +1,6 @@
 import { Factory } from '.';
 import { NormalizeMetaData } from '@wisojs/common';
 
-export interface ServerRules {
-  controllers: any[]
-}
-
 export type ServerInitializer<T, C> = (factory: Factory, model: T, configs: C) => void;
 
 export function Server<T = any, C = any, R = {}>(

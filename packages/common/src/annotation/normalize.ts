@@ -33,16 +33,16 @@ export class NormalizeMetaData {
     return meta;
   }
 
-  static setValue(key: string, value: any): MethodDecorator | ClassDecorator {
-    return (target, property, descriptor) => {
+  static setValue(key: string, value: any) {
+    return <T>(target: Object, property?: string, descriptor?: TypedPropertyDescriptor<T>) => {
       const meta = NormalizeMetaData.bind(!property && !descriptor ? target : descriptor.value);
       meta.set(key, value);
     }
   }
 
   static setFunction(key: string, callback: (...args: any[]) => any) {
-    return (...args: any[]): MethodDecorator | ClassDecorator => {
-      return (target, property, descriptor) => {
+    return (...args: any[]) => {
+      return <T>(target: Object, property?: string, descriptor?: TypedPropertyDescriptor<T>) => {
         const meta = NormalizeMetaData.bind(!property && !descriptor ? target : descriptor.value);
         const value = meta.get(key);
         meta.set(key, callback(value, ...args));
@@ -50,8 +50,8 @@ export class NormalizeMetaData {
     }
   }
   
-  static setArray(key: string, ...args: any[]): MethodDecorator | ClassDecorator  {
-    return (target, property, descriptor) => {
+  static setArray(key: string, ...args: any[])  {
+    return <T>(target: Object, property?: string, descriptor?: TypedPropertyDescriptor<T>) => {
       const meta = NormalizeMetaData.bind(!property && !descriptor ? target : descriptor.value);
       const value: any[] = meta.get(key) || [];
       if (!Array.isArray(value)) throw new TypeError('cannot push indefined value as an array');

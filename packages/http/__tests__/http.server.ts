@@ -1,8 +1,9 @@
 import { HttpServer, HttpServerImplements, HttpServerConfigs } from '../src';
 import { Factory } from '@wisojs/factory';
+import { IndexController } from './controller';
 
 @HttpServer({
-  constrollers: []
+  constrollers: [IndexController]
 })
 export class HttpService implements HttpServerImplements {
 

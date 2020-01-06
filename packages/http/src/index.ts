@@ -1,6 +1,11 @@
+import 'reflect-metadata';
 import { Server } from '@wisojs/factory';
 import { Http } from './http';
 import { Transaction } from '@wisojs/common';
+import { interfaces } from 'inversify';
+import { Config, HTTPVersion } from 'find-my-way';
+
+export * from './annotations';
 
 export interface HttpServerImplements {
   serverWillCreate?(transaction: Transaction): void | Promise<void>;
@@ -9,21 +14,21 @@ export interface HttpServerImplements {
   serverDestroyed?(transaction: Transaction): void | Promise<void>;
 }
 
-export interface HttpServerConfigs {
+export interface HttpServerConfigs extends Config<HTTPVersion.V1> {
   port?: number,
   host?: string,
 }
 
 export interface HttpServerRules {
-  constrollers: any[]
+  constrollers: interfaces.Newable<any>[]
 }
 
-export const HttpServer = Server<HttpServerImplements, HttpServerConfigs, HttpServerRules>(({ factory, configs, target }) => {
+export const HttpServer = Server<
+  HttpServerImplements, 
+  HttpServerConfigs, 
+  HttpServerRules
+>(({ factory, configs, target, rules }) => {
   const http = new Http();
-  factory.on('initialize', async (transaction) => {
-    http.initialize(transaction, configs, target);
-  });
-  factory.on('terminate', async (transaction) => {
-    http.terminate(transaction, target);
-  });
+  factory.on('initialize', async (transaction) => http.initialize(transaction, configs, target, rules));
+  factory.on('terminate', async (transaction) => http.terminate(transaction, target));
 });

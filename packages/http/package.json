@@ -32,7 +32,10 @@
     "@wisojs/common": "^1.0.0",
     "@wisojs/factory": "^1.0.0",
     "find-my-way": "^2.2.1",
-    "koa": "^2.11.0"
+    "inversify": "^5.0.1",
+    "koa": "^2.11.0",
+    "koa-compose": "^4.1.0",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@types/koa": "^2.11.0"
