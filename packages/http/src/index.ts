@@ -6,6 +6,8 @@ import { interfaces } from 'inversify';
 import { Config, HTTPVersion } from 'find-my-way';
 
 export * from './annotations';
+export * from './http';
+export * from './controller';
 
 export interface HttpServerImplements {
   serverWillCreate?(transaction: Transaction): void | Promise<void>;
@@ -28,7 +30,8 @@ export const HttpServer = Server<
   HttpServerConfigs, 
   HttpServerRules
 >(({ factory, configs, target, rules }) => {
-  const http = new Http();
+  const http = new Http(factory);
   factory.on('initialize', async (transaction) => http.initialize(transaction, configs, target, rules));
   factory.on('terminate', async (transaction) => http.terminate(transaction, target));
+  return http;
 });

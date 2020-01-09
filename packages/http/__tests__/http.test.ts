@@ -3,8 +3,10 @@ import { HttpService } from './http.server';
 
 const factory = new Factory();
 
-factory.server(HttpService, {
+const a = factory.server(HttpService, {
 	port: 3000
 });
+
+console.log(a)
 
 factory.initialize();

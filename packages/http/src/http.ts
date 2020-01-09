@@ -6,9 +6,23 @@ import * as Compose from 'koa-compose';
 import { Transaction, NormalizeMetaData } from '@wisojs/common';
 import { HttpServerConfigs, HttpServerImplements, HttpServerRules } from '.';
 import { Middleware } from 'koa';
+import { Factory } from '@wisojs/factory';
 
-export class Http<S = {}, C = {}> extends Koa<S & Koa.DefaultState, C & Koa.DefaultContext> {
+export class Http<
+  S extends Koa.DefaultState = Koa.DefaultState, 
+  C extends Koa.DefaultContext = Koa.DefaultContext
+> extends Koa<S, C> {
   private server: http.Server;
+  public readonly factory: Factory;
+
+  constructor(factory: Factory) {
+    super();
+    this.factory = factory;
+  }
+
+  get logger() {
+    return this.factory.logger;
+  }
   
   private injectRouter(
     rules: HttpServerRules, 
@@ -43,7 +57,7 @@ export class Http<S = {}, C = {}> extends Koa<S & Koa.DefaultState, C & Koa.Defa
       if (!meta || !meta.size) return;
       const prefix = meta.get<string>('prefix') || '/';
       const mds = meta.get<Middleware[]>('middlewares') || [];
-      const target = new controller();
+      const target = new controller(this);
       const properties = Object.getOwnPropertyNames(controller.prototype);
       properties.forEach(property => {
         if (property === 'constructor') return;

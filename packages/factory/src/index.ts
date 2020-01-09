@@ -73,6 +73,6 @@ export class Factory extends AsyncEventEmitter<FactoryEvents> {
     });
     const target = new serverModule(this, options);
     const callback = meta.get<ServerInitializer<Z, U>>('initialize');
-    callback(this, target, options);
+    return callback(this, target, options);
   }
 }
