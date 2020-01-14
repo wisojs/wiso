@@ -76,9 +76,9 @@ export class ServerContext<T extends ServerExtendtion> {
   }
 
   set factory(factory: Factory) {
-    if (!this._locked) throw new CustomError({
+    if (this._locked) throw new CustomError({
       name: 'FACTORY_SERVER_CONTEXT_ERROR',
-      message: 'You can not set `factory` before server locked.',
+      message: 'You can not set `factory` after server locked.',
     });
     this._factory = factory;
   }
@@ -124,16 +124,18 @@ export class ServerContext<T extends ServerExtendtion> {
 }
 
 
-export function MakeServerAnnotation<T extends ServerExtendtion>(callback: (server: ServerContext<T>) => void) {
+export function MakeServerAnnotation<T extends ServerExtendtion>(callback: (server: ServerContext<T>) => T['exports']) {
   return (rules: T['rules']): ClassDecorator => {
     const server = new ServerContext(rules);
     return (target) => {
       const meta = NormalizeMetaData.bind(target);
-      const result = callback(server) as T['exports'];
-      server.lock();
-      server.exports = result;
-      meta.set('initializer', server);
-      return target;
+      meta.set('initializer', (factory: Factory) => {
+        server.factory = factory;
+        const result = callback(server);
+        server.lock();
+        server.exports = result;
+        return server;
+      });
     }
   }
 }

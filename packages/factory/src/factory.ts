@@ -28,8 +28,9 @@ export class Factory {
       message: 'This initializer is not validable.',
     });
 
-    const context = meta.get('initializer') as ServerContext<T>;
-    context.factory = this;
+    const callback = meta.get('initializer') as (factory: Factory) => ServerContext<T>;
+    const context = callback(this);
+
     context.module = new serverModule(this, options);
     context.options = options;
     

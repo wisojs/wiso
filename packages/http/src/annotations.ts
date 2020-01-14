@@ -1,6 +1,7 @@
 import { NormalizeMetaData } from '@wisojs/common';
 import { Middleware as KoaMiddleware } from 'koa';
-import { HTTPMethod } from 'find-my-way'
+import { HTTPMethod } from 'find-my-way';
+
 export const Controller = NormalizeMetaData.setFunction('prefix', (oldValue, newValue) => newValue);
 export const Path = NormalizeMetaData.setFunction('path', (oldValue, newValue) => newValue);
 
@@ -17,5 +18,11 @@ export const Method = NormalizeMetaData.setFunction('methods', (oldValue: HTTPMe
       oldValue.push(method);
     }
   });
+  return oldValue;
+});
+
+export const Guard = NormalizeMetaData.setFunction('_middlewares', (oldValue: KoaMiddleware[], ...newValues: KoaMiddleware[]) => {
+  if (!oldValue) oldValue = [];
+  oldValue.unshift(...newValues);
   return oldValue;
 });
