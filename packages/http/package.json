@@ -22,11 +22,11 @@
     "type": "git",
     "url": "git+https://github.com/wisojs/wiso.git"
   },
-  "scripts": {
-    "build": "rm -rf dist/ && tsc -d"
-  },
   "bugs": {
     "url": "https://github.com/wisojs/wiso/issues"
+  },
+  "scripts": {
+    "build": "rm -rf dist/ && tsc -d"
   },
   "dependencies": {
     "@wisojs/common": "^1.0.0",
