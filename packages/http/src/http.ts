@@ -3,13 +3,14 @@ import * as Koa from 'koa';
 import * as path from 'path';
 import * as Router from 'find-my-way';
 import * as Compose from 'koa-compose';
-import { Transaction, NormalizeMetaData, CustomError } from '@wisojs/common';
+import { Transaction, NormalizeMetaData, CustomError, ParameterMetaData } from '@wisojs/common';
 import { HttpServerConfigs, HttpServerImplements, HttpServerRules } from '.';
 import { Middleware } from 'koa';
 import { Factory } from '@wisojs/factory';
+import { Exception } from 'ts-httpexceptions';
 
 export type HttpDefaultContext = Koa.Context & {
-  logger: Factory['logger']
+  logger: Factory['logger'],
 }
 
 export class Http<S = {}, C = {}> extends Koa<Koa.DefaultState & S, HttpDefaultContext & C> {
@@ -32,7 +33,16 @@ export class Http<S = {}, C = {}> extends Koa<Koa.DefaultState & S, HttpDefaultC
     const router = this.installControllers(rules.constrollers, configs);
     this.use(async (ctx, next) => {
       const res = router.lookup(ctx.req, ctx.res, ctx);
-      await Promise.resolve(res);
+      await Promise.resolve(res).catch((e: Exception | Error) => {
+        this.logger.error(e);
+        if (e instanceof Exception) {
+          ctx.body = e.toString();
+          ctx.status = e.status;
+        } else {
+          ctx.body = e.message;
+          ctx.status = 500;
+        }
+      });
       await next();
     });
   }
@@ -86,7 +96,9 @@ export class Http<S = {}, C = {}> extends Koa<Koa.DefaultState & S, HttpDefaultC
         if (rPath && rMethods && Array.isArray(rMethods) && rMethods.length) {
           const middlewares = mds.slice(0).concat(rMiddlewares);
           middlewares.push(async (ctx, next) => {
-            ctx.body = await target[property](ctx);
+            const pmeta = ParameterMetaData.bind(that);
+            const args = await pmeta.exec(ctx);
+            ctx.body = await target[property](...args);
             await next();
           });
           if (_rMiddlewares.length) middlewares.push(..._rMiddlewares);

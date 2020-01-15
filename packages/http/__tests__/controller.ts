@@ -1,4 +1,4 @@
-import { Controller, Path, Method, Component, Middleware as HttpMiddleware, Guard, HttpDefaultContext } from '../src';
+import { Controller, Component, Use, Guard, Get, Redirect, Param, BadGateway } from '../src';
 import { Middleware } from 'koa-compose';
 
 function logger(...str: any[]): Middleware<any> {
@@ -11,11 +11,11 @@ function logger(...str: any[]): Middleware<any> {
 @Controller('/')
 export class IndexController extends Component{
 
-  @Path('/')
-  @Method('GET')
-  @HttpMiddleware(logger('start middleware'))
+  @Get('/:id(\\d+)')
+  @Use(logger('start middleware'))
   @Guard(logger('end middleware'))
-  abc(ctx: HttpDefaultContext) {
-    return 'hello world';
+  abc(@Param('id') id: string) {
+    throw new BadGateway('aaa');
+    return id;
   }
 }

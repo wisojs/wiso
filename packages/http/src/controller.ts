@@ -1,5 +1,4 @@
 import { Http } from './http';
-import * as Koa from 'koa';
 
 export class Component<S = {}, C = {}> {
   public readonly app: Http<S, C>;

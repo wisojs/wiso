@@ -8,6 +8,7 @@ import { Config, HTTPVersion } from 'find-my-way';
 export * from './annotations';
 export * from './http';
 export * from './controller';
+export * from 'ts-httpexceptions';
 
 export interface HttpServerConfigs extends Config<HTTPVersion.V1> {
   port?: number,
@@ -18,16 +19,10 @@ export interface HttpServerRules {
   constrollers: interfaces.Newable<any>[]
 }
 
-export type HttpServerInterface<
-  M extends HttpServerImplements, 
-  S = {}, 
-  C = {}
-> = ServerExtendtion<
-  HttpServerConfigs, 
-  Http<S, C>, 
-  M, 
-  HttpServerRules
->;
+export type HttpServerInterface<M extends HttpServerImplements, S = {}, C = {}> = ServerExtendtion<HttpServerConfigs, Http<S, C>, M, HttpServerRules> & {
+  state: S,
+  context: C,
+};
 
 export function HttpServer<
   M extends HttpServerImplements, 
